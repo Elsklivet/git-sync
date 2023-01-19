@@ -1,0 +1,1 @@
+Inspired by a script written by my friend [Alejandro](https://github.com/AlejandroCiuba) that would run make sure all the repositories on his machine stayed synced.

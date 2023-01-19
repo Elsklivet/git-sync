@@ -3,10 +3,8 @@ use requestty::{Question, question::Choice::Choice, Answers, Answer, prompt};
 use subprocess::{Popen, PopenConfig, Redirection};
 use regex::Regex;
 
-/// Ensure a git executable is installed and on path.
-/// 
-/// WARNING: If git is not installed, this function DOES NOT RETURN.
-fn check_git_installed() {
+fn main() {
+    // Check git is installed
     // Check that git is installed
     let pr = Popen::create(
         &["git", "--version"],
@@ -37,39 +35,52 @@ fn check_git_installed() {
             exit(1);
         }
     }
-}
 
-/// Show main menu 
-fn show_menu() { 
+    // TODO
+    // First thing's first, need to check if there is a save file with the list of repositories.
+    // If there is not, create one. If there is, load them into a vector. This vector will be saved to the file anytime
+    // a repository is added to or removed from the list, or on quit.
+
+    // Can now proceed to show menu
     // Show the menu indefinitely, let user exit when they want to exit
+    println!("Welcome to git-sync!");
     loop { 
         let main_menu = Question::select("menu")
-            .message("Welcome to Git-Sync: ")
+            .message("Select an action:")
             .choices(vec![
                 "Add a repository".to_string(),
+                "Remove a repository".to_string(),
                 "Sync all repositories".to_string(),
+                "Help".to_string(),
                 "Quit".to_string()
             ])
-            .default(2)
+            .default(0)
             .build();
         
         let selection = prompt(vec![main_menu]);
         if let Ok(sel) = selection {
             for ans in sel.values() {
                 if ans.is_list_item() {
-                    if ans.as_list_item().expect("nothing selected").text == "Quit" {
-                        exit(0);
+                    match ans.as_list_item().expect("nothing selected").index {
+                        // Add a repository
+                        0 => {},
+                        // Remove a repository
+                        1 => {},
+                        // Sync all repositories
+                        2 => {},
+                        // Print help
+                        3 => {},
+                        // Exit program
+                        4 => {
+                            exit(0)
+                        },
+                        // This should never happen
+                        _ => { 
+                            println!("I didn't understand that...");
+                        }
                     }
                 }
             }
         }
     }
-}
-
-fn main() {
-    // Check git is installed
-    check_git_installed();
-
-    // Can now proceed to show menu
-    show_menu();
 }
