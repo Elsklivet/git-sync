@@ -1,7 +1,7 @@
 use regex::Regex;
-use requestty::{prompt, question::Choice::Choice, Answer, Answers, Question};
-use std::fs::{File, OpenOptions};
-use std::io::{BufRead, BufReader, Error, Write};
+use requestty::{prompt, Question};
+use std::fs::{OpenOptions};
+use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::process::exit;
 use subprocess::{Popen, PopenConfig, Redirection};
@@ -96,7 +96,7 @@ fn main() {
                             // Get a directory from the prompt
                             let directory_question = Question::input("add-repo")
                                 .message("Enter path to repository root directory: ")
-                                .validate(|repo, previous_answers| 
+                                .validate(|repo, _previous_answers| 
                                     if Path::new(repo).is_dir() && Path::new(&format!("{}\\.git", repo)).is_dir() { 
                                         Ok(())
                                     } else {
@@ -139,7 +139,7 @@ fn main() {
                             // Get a directory from the prompt
                             let directory_question = Question::input("add-repo")
                                 .message("Enter path to repository to remove from sync system: ")
-                                .validate(|repo, previous_answers| {
+                                .validate(|repo, _previous_answers| {
                                     if Path::new(repo).is_dir()
                                         && Path::new(&format!("{}\\.git", repo)).is_dir()
                                     {
@@ -190,7 +190,7 @@ fn main() {
                                 match pr {
                                     Ok(mut pop) => {
                                         println!("Ran git pull on {}", repo);
-                                        let (out, err) = pop.communicate(None).unwrap();
+                                        let (out, _err) = pop.communicate(None).unwrap();
                                         println!(
                                             "Output: {}",
                                             out.unwrap_or("No output".to_string())
@@ -214,7 +214,7 @@ fn main() {
                             let mut conglomerate_string = String::new();
                             for repo in repo_list {
                                 conglomerate_string.push_str(repo.as_str());
-                                conglomerate_string.push_str("\n");
+                                conglomerate_string.push('\n');
                             }
 
                             let mut repository_list_file = match OpenOptions::new()
